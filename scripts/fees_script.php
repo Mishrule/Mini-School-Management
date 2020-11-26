@@ -217,4 +217,27 @@ if (isset($_POST["showPreviousPaymentTerm"])) {
     }
 }*/
 
+//================================= UPDATE AREAS TABLE
+if (isset($_POST["arearspaymentBTN"])) {
+ 
+    $arears = mysqli_real_escape_string($con, $_POST["arears"]);
+    $arearsstudentPaymentClass = mysqli_real_escape_string($con, $_POST["arearsstudentPaymentClass"]);
+    $arearsstudentPaymentName = mysqli_real_escape_string($con, $_POST["arearsstudentPaymentName"]);
+    $arearspaymentYear = mysqli_real_escape_string($con, $_POST["arearspaymentYear"]);
+    $arearspaymentTerm = mysqli_real_escape_string($con, $_POST["arearspaymentTerm"]);
+
+
+        $arearspaySqlUpdate = "UPDATE schoolfees SET arrears='$arears' WHERE class_form='$arearsstudentPaymentClass' AND names='$arearsstudentPaymentName' AND term='$arearspaymentTerm' AND fees_year='$arearspaymentYear'";
+
+        $arearspayResultUpdate = mysqli_query($con, $arearspaySqlUpdate);
+        if ($arearspayResultUpdate) {
+            echo "ARREARS UPDATED SUCCESSFULLY";
+        } else {
+            die("cant Connect " . mysqli_error($con));
+        }
+   
+
+
+}
+
 ?>

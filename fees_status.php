@@ -1,5 +1,8 @@
+<?php 
+    include('scripts/dbCon.php');
+?>
 <!doctype html>
-<html class="no-js" lang="en">
+<html lang="en">
 
 <?php require_once('scripts/head.php'); ?>
 
@@ -33,7 +36,7 @@
                 <div class="col-md-12">
                     <div class="row">
                         <!-- Check fully paid Fees -->
-                        <div class="col-md-6">
+                        <div class="col-md-4">
                             <div class="panel panel-primary">
                                 <div class="panel-heading">
                                     <div align="center">
@@ -62,7 +65,7 @@
                                             <?php echo $msg; ?>
                                         </select>
                                     </div>
-                                    <div align="left"><br/>
+                                    <div align="left"><br />
                                         <label for="checkByTerm">Term</label>
                                         <select class="custom-select d-block my-3 form-control" id="checkByTerm" name="checkByTerm">
                                             <option value="">Select Term</option>
@@ -72,17 +75,25 @@
                                         </select>
                                     </div>
 
-                                    <div align="left"><br/>
+                                    <div align="left"><br />
                                         <label for="checkByYear">Year</label>
                                         <select class="custom-select d-block my-3 form-control" id="checkByYear" name="checkByYear">
                                             <option value="">Select Year</option>
-                                            <option value="2018">2018</option>
-                                            <option value="2019">2019</option>
-                                            <option value="2020">2020</option>
+                                            <?php
+                                            $yearShow = '';
+                                            $yearSql = 'SELECT * FROM years ORDER BY year ASC';
+                                            $yearResult = mysqli_query($con, $yearSql);
+                                            while ($yearRow = mysqli_fetch_array($yearResult)) {
+                                                $yearShow .= '
+                                                   <option value="' . $yearRow['year'] . '">' . $yearRow['year'] . '</option>
+                                                                            ';
+                                            }
+                                            echo $yearShow;
+                                            ?>
                                         </select>
                                     </div>
 
-                                    <div align="left"><br/>
+                                    <div align="left"><br />
                                         <label for="checkByStatus">Status</label>
                                         <select class="custom-select d-block my-3 form-control" id="checkByStatus" name="checkByStatus">
                                             <option value="">Select Status</option>
@@ -100,7 +111,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-6">
+                        <div class="col-md-8">
                             <div class="panel panel-primary">
                                 <div class="panel-heading">
                                     <div align="center">
@@ -111,7 +122,6 @@
                                     <div class="table-responsive">
 
                                         <div id="checkClassShow"></div>
-
                                     </div>
                                 </div>
                             </div>
@@ -133,3 +143,179 @@
 </body>
 
 </html>
+<script>
+$(document).ready(function(){
+        $('#genByReportBtn').hide();
+        $('#checkByReportBtn').hide();
+        
+        $(document).on('click', '#genByReportBtn', function(){
+            var printkon = document.getElementById('setTable');
+            var winkon = window.open("","","width=900,height=650");
+            winkon.document.write(printkon.outerHTML);
+            winkon.document.close();
+            winkon.focus();
+            winkon.print();
+            winkon.close();
+        });
+
+
+        $(document).on('click', '#checkByReportBtn', function(){
+            var printkon = document.getElementById('check1');
+            var winkon = window.open("","","width=900,height=650");
+            winkon.document.write(printkon.outerHTML);
+            winkon.document.close();
+            winkon.focus();
+            winkon.print();
+            winkon.close();
+        });
+
+
+
+
+        $(document).on('click', '#genByClassBtn', function(){
+            var generateClass = $('#genByClass').val();
+            var generateTerm = $('#genByTerm').val();
+            var generateYear = $('#genByYear').val();
+            var generateBtn = $('#genByClassBtn').val();
+            
+            $.ajax({
+                url:'scripts/fees_status_script.php',
+                method:'POST',
+                data:{generateClass:generateClass, generateTerm:generateTerm, generateYear:generateYear, generateBtn:generateBtn},
+                success:function(data){
+                   
+                    $('#genClassShow').html(data);
+                    if(generateYear==0){
+                        $('#genByReportBtn').hide();
+                    }else{
+                        $('#genByReportBtn').show();
+                    }
+                    
+                    
+                }
+            });
+        });
+//=================================== CHECK FULL PAID
+        $(document).on('click', '#checkByClassBtn', function(){
+            var checkClass = $('#checkByClass').val();
+            var checkTerm = $('#checkByTerm').val();
+            var checkYear = $('#checkByYear').val();
+            var checkStatus = $('#checkByStatus').val();
+            var checkBtn = $('#checkByClassBtn').val();
+            
+            $.ajax({
+                url:'scripts/fees_status_script.php',
+                method:'POST',
+                data:{checkClass:checkClass, checkStatus:checkStatus, checkTerm:checkTerm, checkYear:checkYear, checkBtn:checkBtn},
+                success:function(data){
+                   
+                    $('#checkClassShow').html(data);
+                    if(checkYear==0){
+                        $('#checkByReportBtn').hide();
+                    }else{
+                        $('#checkByReportBtn').show();
+                    }
+                    
+                    
+                }
+            });
+        });
+//==================================== YEAR
+        $(document).on('change', '#viewByYear', function(){
+            var viewByYear = $('#viewByYear').val();
+            
+            $.ajax({
+                url:'scripts/fees_status_script.php',
+                method:'POST',
+                data:{viewByYear:viewByYear},
+                success:function(data){
+                   
+                    $('#vYear').html(data);
+                                        
+                }
+            });
+            
+        });
+//========================================== TERM & YEAR
+        $(document).on('click', '#vTermClass', function(){
+            var chkByTermYear = $('#chkByTermYear').val();
+            var vwByYear = $('#vwByYear').val();
+            var termClassBtn = $('#vTermClass').val();
+            $.ajax({
+                url:'scripts/fees_status_script.php',
+                method:'POST',
+                data:{chkByTermYear:chkByTermYear, vwByYear:vwByYear, termClassBtn:termClassBtn},
+                success:function(data){
+                   
+                    $('#vTermYear').html(data);
+                                        
+                }
+            });
+
+        });
+//===================================== YEAR AND CLASS
+        $(document).on('click', '#vClassYearBtn', function(){
+            var vwByYearClass = $('#vwByYearClass').val();
+            var vClassYear = $('#vClassYear').val();
+            var vClassYearBtn = $('#vClassYearBtn').val();
+            
+
+
+
+            $.ajax({
+                url:'scripts/fees_status_script.php',
+                method:'POST',
+                data:{vwByYearClass:vwByYearClass, vClassYear:vClassYear, vClassYearBtn:vClassYearBtn},
+                success:function(data){
+                   
+                    $('#vTermYearClass').html(data);
+                                        
+                }
+            });
+
+        });
+
+//===================================== YEAR AND CLASS
+        $(document).on('click', '#vClassTermBtn', function(){
+            var vwByTermClass = $('#chkByTermClass').val();
+            var vClassTerm = $('#vClassTerm').val();
+            var vClassTermBtn = $('#vClassTermBtn').val();
+            
+
+
+
+            $.ajax({
+                url:'scripts/fees_status_script.php',
+                method:'POST',
+                data:{vwByTermClass:vwByTermClass, vClassTerm:vClassTerm, vClassTermBtn:vClassTermBtn},
+                success:function(data){
+                   
+                    $('#vTermTermClass').html(data);
+                                        
+                }
+            });
+
+        });
+
+//================================ FEES PDF GENERATE
+ /*   $(document).on('click', '#genByReportBtn', function(){
+            var generateClass = $('#genByClass').val();
+            var generateTerm = $('#genByTerm').val();
+            var generateYear = $('#genByYear').val();
+            var generateBtn = $('#genByReportBtn').val();
+            
+            $.ajax({
+                url:'genByClass.php',
+                method:'POST',
+                data:{generateClass:generateClass, generateTerm:generateTerm, generateYear:generateYear, generateBtn:generateBtn},
+                success:function(data){
+                    alert(data);
+
+                    
+                    
+                }
+            });
+        }); */
+
+});
+</script>

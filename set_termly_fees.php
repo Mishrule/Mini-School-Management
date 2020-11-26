@@ -1,5 +1,5 @@
-<?php 
-    include('scripts/dbCon.php');
+<?php
+include('scripts/dbCon.php');
 ?>
 <!doctype html>
 <html class="no-js" lang="en">
@@ -76,6 +76,7 @@
                                                 <hr />
                                                 <div class="table table-responsive">
                                                     <table class="table table-responsive">
+                                                        
                                                         <tr>
                                                             <td>
                                                                 <label for="fees" id="fterm">Term Fees</label>
@@ -91,9 +92,18 @@
                                                                 <label for="academicYear" id="aYear">Year</label>
                                                                 <select class="custom-select d-block my-3 form-control" id="academicYear" name="academicYear" required>
                                                                     <option value="">Select Year</option>
-                                                                    <option value="2018">2018</option>
-                                                                    <option value="2019">2019</option>
-                                                                    <option value="2020">2020</option>
+                                                                    <?php
+                                                                    $yearShow = '';
+                                                                    $yearSql = 'SELECT * FROM years ORDER BY year ASC';
+                                                                    $yearResult = mysqli_query($con, $yearSql);
+                                                                    while ($yearRow = mysqli_fetch_array($yearResult)) {
+                                                                        $yearShow .= '
+                                                                            <option value="' . $yearRow['year'] . '">' . $yearRow['year'] . '</option>
+                                                                            ';
+                                                                    }
+                                                                    echo $yearShow;
+                                                                    ?>
+
                                                                 </select>
                                                             </td>
                                                             <td>
@@ -107,6 +117,7 @@
                                                             </td>
 
                                                         </tr>
+
                                                         <tr>
                                                             <!--  <td>
                                                     <label for="totalFees">Total Fees</label>
@@ -114,11 +125,12 @@
                                                 </td>-->
                                                             <td colspan="2">
                                                                 <div align="center">
-                                                                    <button style="margin-top:30px; border-radius:50px;" type="button" id="save" name"save" value="save" class="btn btn-primary btn-lg">Save</button>
+                                                                    <button style="margin-top:30px; border-radius:50px;" type="button" id="save" name="save" value="save" class="btn btn-primary btn-lg">Save</button>
                                                                 </div>
                                                             </td>
 
                                                         </tr>
+                                                        
 
                                                     </table>
 
@@ -151,270 +163,284 @@
 
 </html>
 <script>
-//===================================== LABELS ===============================================
-   // $('#sel').hide();
+    //===================================== LABELS ===============================================
+    // $('#sel').hide();
     $('#fterm').hide();
     $('#farrears').hide();
     $('#aYear').hide();
     $('#term').hide();
-//===================================== HIDE FIELDS ==========================================
-  //  $('#studentClass').hide();
+    //===================================== HIDE FIELDS ==========================================
+    //  $('#studentClass').hide();
     $('#fees').hide();
     $('#arrears').hide();
     $('#academicYear').hide();
     $('#academicTerm').hide();
     $('#save').hide();
-    $(document).ready(function(){
-        $('#studentClass').change(function(){
+    $(document).ready(function() {
+        $('#studentClass').change(function() {
             var changeClass = $('#studentClass').val();
 
             $.ajax({
-                url:'scripts/fees_script.php',
-                method:'POST',
-                data:{changeClass:changeClass},
-                success:function(data){
+                url: 'scripts/fees_script.php',
+                method: 'POST',
+                data: {
+                    changeClass: changeClass
+                },
+                success: function(data) {
                     $('#display').html(data);
                 }
             });
         });
 
-//===================================== SHOW FILEDS
-    $(document).on('change','#studentname', function(){
-        
-           // var name = 
-        if($('#studentname').val()=="No Records Found"){
-            //===================================== LABELS ===============================================
-            // $('#sel').hide();
+        //===================================== SHOW FILEDS
+        $(document).on('change', '#studentname', function() {
+
+            // var name = 
+            if ($('#studentname').val() == "No Records Found") {
+                //===================================== LABELS ===============================================
+                // $('#sel').hide();
                 $('#fterm').hide();
                 $('#farrears').hide();
                 $('#aYear').hide();
                 $('#term').hide();
-            //===================================== HIDE FIELDS ==========================================
-            //  $('#studentClass').hide();
+                //===================================== HIDE FIELDS ==========================================
+                //  $('#studentClass').hide();
                 $('#fees').hide();
                 $('#arrears').hide();
                 $('#academicYear').hide();
                 $('#academicTerm').hide();
                 $('#save').hide();
 
-        }else{
- //===================================== LABELS ===============================================
-        // $('#sel').hide();
-            $('#fterm').show();
-            $('#farrears').show();
-            $('#aYear').show();
-            $('#term').show();
-//===================================== show FIELDS ==========================================
-        //  $('#studentClass').show();
-            $('#fees').show();
-            $('#arrears').show();
-            $('#academicYear').show();
-            $('#academicTerm').show();
-           // $('#save').show();
-        }
-    });
-     $(document).on('click', '#save', function(){
+            } else {
+                //===================================== LABELS ===============================================
+                // $('#sel').hide();
+                $('#fterm').show();
+                $('#farrears').show();
+                $('#aYear').show();
+                $('#term').show();
+                //===================================== show FIELDS ==========================================
+                //  $('#studentClass').show();
+                $('#fees').show();
+                $('#arrears').show();
+                $('#academicYear').show();
+                $('#academicTerm').show();
+                // $('#save').show();
+            }
+        });
+        $(document).on('click', '#save', function() {
             var studentclass = $('#studentClass').val();
             var studentFees = $('#fees').val();
             var studentArrears = $('#arrears').val();
-            var studentAcademicYear= $('#academicYear').val();
-            var studentAcademicTerm= $('#academicTerm').val();
+            var studentAcademicYear = $('#academicYear').val();
+            var studentAcademicTerm = $('#academicTerm').val();
             var studentname = $('#studentname').val();
-            var saveBtn= $('#save').val();
-           
-            
-           $.ajax({
-                url:'scripts/fees_script.php',
-                method:'POST',
-                data:{studentclass:studentclass, studentFees:studentFees, studentname:studentname, studentArrears:studentArrears, studentAcademicYear:studentAcademicYear, studentAcademicTerm:studentAcademicTerm, saveBtn:saveBtn},
-                success:function(data){
-                    alert(data);
-                     $('#studentClass').val("");
-                        $('#fees').val("");
-                        $('#arrears').val("");
-                        $('#academicYear').val("");
-                        $('#academicTerm').val("");
-                        $('#studentname').val("");
-                        $('#save').hide();
-                },
-            }); 
-     });
+            var saveBtn = $('#save').val();
 
-//======================================= SET TERMLY FEES
-    $(document).on('change', '#studentPaymentClass', function(){
+            // studentFees = parseFloat(studentFees) + parseFloat(studentArrears);
+
+
+            $.ajax({
+                url: 'scripts/fees_script.php',
+                method: 'POST',
+                data: {
+                    studentclass: studentclass,
+                    studentFees: studentFees,
+                    studentname: studentname,
+                    studentArrears: studentArrears,
+                    studentAcademicYear: studentAcademicYear,
+                    studentAcademicTerm: studentAcademicTerm,
+                    saveBtn: saveBtn
+                },
+                success: function(data) {
+                    alert(data);
+                    $('#studentClass').val("");
+                    $('#fees').val("");
+                    $('#arrears').val("");
+                    $('#academicYear').val("");
+                    $('#academicTerm').val("");
+                    $('#studentname').val("");
+                    $('#save').hide();
+                },
+            });
+        });
+
+        //======================================= SET TERMLY FEES
+        $(document).on('change', '#studentPaymentClass', function() {
             var changePaymentClass = $('#studentPaymentClass').val();
 
             $.ajax({
-                url:'scripts/fees_script.php',
-                method:'POST',
-                data:{changePaymentClass:changePaymentClass},
-                success:function(data){
+                url: 'scripts/fees_script.php',
+                method: 'POST',
+                data: {
+                    changePaymentClass: changePaymentClass
+                },
+                success: function(data) {
                     $('#displays').html(data);
-                    
-                    if($('#studentPaymentClass').val()=="Select Student Class or Form..."){
+
+                    if ($('#studentPaymentClass').val() == "Select Student Class or Form...") {
                         $('#receipt').val("");
-                    }else{
+                    } else {
                         $('#receipt').val(receipt());
                     }
                 }
             });
         });
 
-        $(document).on('change', '#studentPaymentClass', function(){
-            
+        $(document).on('change', '#studentPaymentClass', function() {
 
-            
+
+
         });
 
-        $('#academicTerm').change(function(){
-            if($('#academicTerm').val()==0){
+        $('#academicTerm').change(function() {
+            if ($('#academicTerm').val() == 0) {
                 $('#save').hide();
-            }else{
+            } else {
                 $('#save').show();
             }
         });
 
-//================================== SHOW IMAGE
-    // $(document).on('change','#studentPaymentName', function(){
-    //     var payName = $('#studentPaymentName').val();
-    //     var payClass = $('#studentPaymentClass').val();
+        //================================== SHOW IMAGE
+        // $(document).on('change','#studentPaymentName', function(){
+        //     var payName = $('#studentPaymentName').val();
+        //     var payClass = $('#studentPaymentClass').val();
 
-    //      $.ajax({
-    //             url:'scripts/fees_script.php',
-    //             method:'POST',
-    //             data:{payName:payName, payClass:payClass},
-    //             success:function(data){
-    //                 $('#imageShow').html(data);
-    //             }
-    //     });
-    // });
-// //=================================================Make Payment Button
-//     $(document).on('click', '#makePayment', function() {
-//         var makePay = $('#makePayment').val();
-//         var studentPayClass = $('#studentPaymentClass').val();
-//         var pay = $('#payment').val();
-//         var payYear = $('#paymentYear').val();
-//         var payTerm = $('#paymentTerm').val();
-//         var studentPayName = $('#studentPaymentName').val();
-//         var receiptS = $('#receipt').val(); 
+        //      $.ajax({
+        //             url:'scripts/fees_script.php',
+        //             method:'POST',
+        //             data:{payName:payName, payClass:payClass},
+        //             success:function(data){
+        //                 $('#imageShow').html(data);
+        //             }
+        //     });
+        // });
+        // //=================================================Make Payment Button
+        //     $(document).on('click', '#makePayment', function() {
+        //         var makePay = $('#makePayment').val();
+        //         var studentPayClass = $('#studentPaymentClass').val();
+        //         var pay = $('#payment').val();
+        //         var payYear = $('#paymentYear').val();
+        //         var payTerm = $('#paymentTerm').val();
+        //         var studentPayName = $('#studentPaymentName').val();
+        //         var receiptS = $('#receipt').val(); 
 
-//         var datee = new Date();
+        //         var datee = new Date();
 
-//         $('#labelReceipt').text(receiptS);
-//         $('#labelDate').text(datee);
-//         $('#labelName').text(studentPayName);
-//         $('#labelAmount').text(pay);
-//         $('#labelTerm').text(payTerm);
-//         $('#labelYear').text(payYear);
-        
-        
-//         $.ajax({
-//                 url:'scripts/fees_script.php',
-//                 method:'POST',
-//                 data:{makePay:makePay, studentPayClass:studentPayClass, receiptS:receiptS, pay:pay, payYear:payYear,payTerm:payTerm, studentPayName:studentPayName},
-//                 success:function(data){
-//                    alert(data);
-//                 }
-//         });
-//     });
+        //         $('#labelReceipt').text(receiptS);
+        //         $('#labelDate').text(datee);
+        //         $('#labelName').text(studentPayName);
+        //         $('#labelAmount').text(pay);
+        //         $('#labelTerm').text(payTerm);
+        //         $('#labelYear').text(payYear);
 
-//=================================================Print Receipt
- /*   $(document).on('click', '#makeReceipt', function() {
-        var makeReceipt = $('#makeReceipt').val();
-        var studentReceiptClass = $('#studentPaymentClass').val();
-        var Receipt= $('#payment').val();
-        var ReceiptYear = $('#paymentYear').val();
-        var ReceiptTerm = $('#paymentTerm').val();
-        var studentReceiptName = $('#studentPaymentName').val();
-        
-        
-        $.ajax({
-                url:'feesScript.php',
-                method:'POST',
-                data:{makeReceipt:makeReceipt, studentReceiptClass:studentReceiptClass, Receipt:Receipt, ReceiptYear:ReceiptYear,ReceiptTerm:ReceiptTerm, studentReceiptName:studentReceiptName},
-                success:function(data){
-                   $('#receiptTable').html(data);
-                }
-        });
-    });*/
 
-//========================================= UPDATE THE FEES TABLE
-    // $(document).on('click', '#makePayment', function() {
-    //     var makePayS = $('#makePayment').val();
-    //     var studentPayClassS = $('#studentPaymentClass').val();
-    //     var payS = $('#payment').val();
-    //     var payYearS = $('#paymentYear').val();
-    //     var payTermS = $('#paymentTerm').val();
-    //     var studentPayNameS = $('#studentPaymentName').val();
-    //     var showPreviousPayS = $('#showPreviousPay').val();
-    //     var showPreviousTotalfeesS = $('#showPreviousTotalfees').val();
+        //         $.ajax({
+        //                 url:'scripts/fees_script.php',
+        //                 method:'POST',
+        //                 data:{makePay:makePay, studentPayClass:studentPayClass, receiptS:receiptS, pay:pay, payYear:payYear,payTerm:payTerm, studentPayName:studentPayName},
+        //                 success:function(data){
+        //                    alert(data);
+        //                 }
+        //         });
+        //     });
 
-    //             $.ajax({
-    //             url:'scripts/fees_script.php',
-    //             method:'POST',
-    //             data:{makePayS:makePayS, studentPayClassS:studentPayClassS, payS:payS, payYearS:payYearS, payTermS:payTermS, studentPayNameS:studentPayNameS, showPreviousPayS:showPreviousPayS, showPreviousTotalfeesS:showPreviousTotalfeesS},
-    //             success:function(data){
-    //                alert(data);
-    //                $('#studentPaymentClass').val("");
-    //                $('#payment').val("");
-    //                $('#paymentYear').val("");
-    //                 $('#paymentTerm').val("");
-    //                 $('#studentPaymentName').val("");
-    //                 $('#showPreviousPay').val("");
-    //                 $('#showPreviousTotalfees').val("");
-    //                 $('#receipt').val("");
-    //                 $('#MainArrears').text("");
-    //             }
-    //     });
-    // });
+        //=================================================Print Receipt
+        /*   $(document).on('click', '#makeReceipt', function() {
+               var makeReceipt = $('#makeReceipt').val();
+               var studentReceiptClass = $('#studentPaymentClass').val();
+               var Receipt= $('#payment').val();
+               var ReceiptYear = $('#paymentYear').val();
+               var ReceiptTerm = $('#paymentTerm').val();
+               var studentReceiptName = $('#studentPaymentName').val();
+               
+               
+               $.ajax({
+                       url:'feesScript.php',
+                       method:'POST',
+                       data:{makeReceipt:makeReceipt, studentReceiptClass:studentReceiptClass, Receipt:Receipt, ReceiptYear:ReceiptYear,ReceiptTerm:ReceiptTerm, studentReceiptName:studentReceiptName},
+                       success:function(data){
+                          $('#receiptTable').html(data);
+                       }
+               });
+           });*/
 
-    // $(document).on('change', '#paymentTerm', function(){
-    //     var showPreviousPaymentTerm = $('#paymentTerm').val();
-    //     var showPreviousPaymentClass = $('#studentPaymentClass').val();
-    //     var showPreviousPaymentName = $('#studentPaymentName').val();
-    //     var showPreviousPaymentYear = $('#paymentYear').val();
-        
-    
-    //     $.ajax({
-    //             url:'scripts/fees_script.php',
-    //             method:'POST',
-    //             data:{showPreviousPaymentTerm:showPreviousPaymentTerm, showPreviousPaymentClass:showPreviousPaymentClass, showPreviousPaymentName:showPreviousPaymentName, showPreviousPaymentYear:showPreviousPaymentYear},
-    //             success:function(data){
-    //               // alert(data);
-    //                $('#previousPayment').html(data);
-    //                var previous = $('#showPreviousPay').val();
-    //                 var totalFees = $('#showPreviousTotalfees').val();
-    //                $('#MainArrears').text(totalFees - previous);
-                  
-    //             }
-                
-    //     });
-        
-        
-    // });
-/*
-    if($('#studentPaymentClass').val()=="Select Student Class or Form..." && $('#studentPaymentName').val()=="Select Student Name..."){
-        $('#makePayment').hide();
-    }else{
-        $('#makePayment').show();
-    }
-*/
-// //===============================|PRINT RECEIPT
-//     $(document).on('click', '#labelPrintButton', function(){
-//             var printkon = document.getElementById('receiptTable');
-//             var winkon = window.open("","","width=900,height=650");
-//             winkon.document.write(printkon.outerHTML);
-//             winkon.document.close();
-//             winkon.focus();
-//             winkon.print();
-//             winkon.close();
+        //========================================= UPDATE THE FEES TABLE
+        // $(document).on('click', '#makePayment', function() {
+        //     var makePayS = $('#makePayment').val();
+        //     var studentPayClassS = $('#studentPaymentClass').val();
+        //     var payS = $('#payment').val();
+        //     var payYearS = $('#paymentYear').val();
+        //     var payTermS = $('#paymentTerm').val();
+        //     var studentPayNameS = $('#studentPaymentName').val();
+        //     var showPreviousPayS = $('#showPreviousPay').val();
+        //     var showPreviousTotalfeesS = $('#showPreviousTotalfees').val();
 
-//         $('#labelReceipt').text("");
-//         $('#labelDate').text("");
-//         $('#labelName').text("");
-//         $('#labelAmount').text("");
-//         $('#labelTerm').text("");
-//         $('#labelYear').text("");
-//     });
-});
+        //             $.ajax({
+        //             url:'scripts/fees_script.php',
+        //             method:'POST',
+        //             data:{makePayS:makePayS, studentPayClassS:studentPayClassS, payS:payS, payYearS:payYearS, payTermS:payTermS, studentPayNameS:studentPayNameS, showPreviousPayS:showPreviousPayS, showPreviousTotalfeesS:showPreviousTotalfeesS},
+        //             success:function(data){
+        //                alert(data);
+        //                $('#studentPaymentClass').val("");
+        //                $('#payment').val("");
+        //                $('#paymentYear').val("");
+        //                 $('#paymentTerm').val("");
+        //                 $('#studentPaymentName').val("");
+        //                 $('#showPreviousPay').val("");
+        //                 $('#showPreviousTotalfees').val("");
+        //                 $('#receipt').val("");
+        //                 $('#MainArrears').text("");
+        //             }
+        //     });
+        // });
+
+        // $(document).on('change', '#paymentTerm', function(){
+        //     var showPreviousPaymentTerm = $('#paymentTerm').val();
+        //     var showPreviousPaymentClass = $('#studentPaymentClass').val();
+        //     var showPreviousPaymentName = $('#studentPaymentName').val();
+        //     var showPreviousPaymentYear = $('#paymentYear').val();
+
+
+        //     $.ajax({
+        //             url:'scripts/fees_script.php',
+        //             method:'POST',
+        //             data:{showPreviousPaymentTerm:showPreviousPaymentTerm, showPreviousPaymentClass:showPreviousPaymentClass, showPreviousPaymentName:showPreviousPaymentName, showPreviousPaymentYear:showPreviousPaymentYear},
+        //             success:function(data){
+        //               // alert(data);
+        //                $('#previousPayment').html(data);
+        //                var previous = $('#showPreviousPay').val();
+        //                 var totalFees = $('#showPreviousTotalfees').val();
+        //                $('#MainArrears').text(totalFees - previous);
+
+        //             }
+
+        //     });
+
+
+        // });
+        /*
+            if($('#studentPaymentClass').val()=="Select Student Class or Form..." && $('#studentPaymentName').val()=="Select Student Name..."){
+                $('#makePayment').hide();
+            }else{
+                $('#makePayment').show();
+            }
+        */
+        // //===============================|PRINT RECEIPT
+        //     $(document).on('click', '#labelPrintButton', function(){
+        //             var printkon = document.getElementById('receiptTable');
+        //             var winkon = window.open("","","width=900,height=650");
+        //             winkon.document.write(printkon.outerHTML);
+        //             winkon.document.close();
+        //             winkon.focus();
+        //             winkon.print();
+        //             winkon.close();
+
+        //         $('#labelReceipt').text("");
+        //         $('#labelDate').text("");
+        //         $('#labelName').text("");
+        //         $('#labelAmount').text("");
+        //         $('#labelTerm').text("");
+        //         $('#labelYear').text("");
+        //     });
+    });
 </script>
