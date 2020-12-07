@@ -79,10 +79,10 @@
                         <li>
                             <a class="has-arrow" href="#" aria-expanded="false"><i class="icon nalika-mail icon-wrap"></i> <span class="mini-click-non">Report</span></a>
                             <ul class="submenu-angle" aria-expanded="false">
-                                <li><a title="Inbox" href="register.php"><span class="mini-sub-pro">Enter Marks</span></a></li>
-                                <li><a title="View Mail" href="#"><span class="mini-sub-pro">Create Class</span></a></li>
-                                <li><a title="Compose Mail" href="#"><span class="mini-sub-pro">Create Subjects</span></a></li>
-                                <li><a title="Compose Mail" href="#p"><span class="mini-sub-pro">Announcement</span></a></li>
+                                <li><a title="Inbox" href="marks.php"><span class="mini-sub-pro">Enter Marks</span></a></li>
+                                <li><a title="View Mail" href="#"><span class="mini-sub-pro">View Report</span></a></li>
+                                <li><a title="Compose Mail" href="#"><span class="mini-sub-pro">Print Report</span></a></li>
+                                <li><a title="Compose Mail" href="#"><span class="mini-sub-pro">Announcement</span></a></li>
                                 
                             </ul>
                         </li>
