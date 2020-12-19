@@ -14,7 +14,7 @@ include 'scripts/dbCon.php';
 //     $email = $row["email"];
 // }
 
-$displayMessage = $show = $showed = $showedl = $time = '';
+/*$displayMessage = $show = $showed = $showedl = $time = '';
 if (isset($_POST['send'])) {
     $fullName = mysqli_real_escape_string($con, $_POST['fullName']);
     $teacherContact = mysqli_real_escape_string($con, $_POST['teacherContact']);
@@ -52,7 +52,7 @@ if (isset($_POST['send'])) {
             );
         }
     }
-}
+}*/
 ?>
 
 <!doctype html>
@@ -139,7 +139,7 @@ if (isset($_POST['send'])) {
                                                 </select>
                                             </div>
                                             <div class="col-md-3">
-                                                <label for="subject">Select Subject</label>
+                                                <label for="subject" id="subjectLabel">Select Subject</label>
                                                 <select class="form-control" name="subject" id="subject">
                                                     <?php
                                                     $fetchShow = '';
@@ -169,13 +169,9 @@ if (isset($_POST['send'])) {
                                                             $fetchShow .=
                                                                 '
                                                                         <option value="' .
-                                                                $fetchRow[
-                                                                    'subject_name'
-                                                                ] .
+                                                                $fetchRow['subject_name'] .
                                                                 '">' .
-                                                                $fetchRow[
-                                                                    'subject_name'
-                                                                ] .
+                                                                $fetchRow['subject_name'] .
                                                                 '</option>
                                                                         ';
                                                         }
@@ -187,7 +183,7 @@ if (isset($_POST['send'])) {
                                                 </select>
                                             </div>
                                             <div class="col-md-3">
-                                                <label for="class_">Select Class</label>
+                                                <label for="class_" id="classLabel">Select Class</label>
                                                 <select class="form-control" name="class_" id="class_">
                                                     <?php
                                                     $fetchClassShow = '';
@@ -217,13 +213,9 @@ if (isset($_POST['send'])) {
                                                             $fetchClassShow .=
                                                                 '
                                                                         <option value="' .
-                                                                $fetchClassRow[
-                                                                    'class_name'
-                                                                ] .
+                                                                $fetchClassRow['class_name'] .
                                                                 '">' .
-                                                                $fetchClassRow[
-                                                                    'class_name'
-                                                                ] .
+                                                                $fetchClassRow['class_name'] .
                                                                 '</option>
                                                                         ';
                                                         }
@@ -241,69 +233,81 @@ if (isset($_POST['send'])) {
                                             </div>
                                             <div class="row">
                                                 <div class="col-md-6">
-                                                    <label for="classScorePercent">Enter Class Score Percent</label>
-                                                    <input type="text" class="form-control" id="classScorePercent" name="classScorePercent" placeholder="30%">
+                                                    <label for="classScorePercent" id="classScorePercentLabel">Enter Class Score Percent</label>
+                                                    <input type="number" class="form-control" id="classScorePercent" name="classScorePercent" placeholder="30%">
                                                 </div>
                                                 <div class="col-md-6">
-                                                    <label for="examScorePercent">Enter Class Score Percent</label>
-                                                    <input type="text" class="form-control" id="examScorePercent" name="examScorePercent" placeholder="30%">
+                                                    <label for="examScorePercent" id="examScorePercentLabel">Enter Exam Score Percent</label>
+                                                    <input type="number" class="form-control" id="examScorePercent" name="examScorePercent" placeholder="70%">
                                                 </div>
                                             </div>
                                             <div class="row" style="margin-top: 30px;">
-
+                                                <div id="stat"></div>
                                             </div>
                                             <div class="row">
-                                                <div class="col-md-12">
-                                                    <table class="table table-responsive">
-                                                        <thead>
-                                                            <th>#</th>
-                                                            <th>Student Name</th>
-                                                            <th>Class Score</th>
-                                                            <th></th>
-                                                            <th>Exams Score</th>
-                                                            <th></th>
-                                                            <th>Total</th>
-                                                            <th>Remarks</th>
-                                                            <th>Buttons</th>
-                                                        </thead>
-                                                        <tbody>
-                                                            <tr>
-                                                                <td>1</td>
-                                                                <td>
-                                                                    <p>Ernest Kyei Nkrumah</p>
+                                                <div class="col-md-4">
+                                                    <div id="showStudentInClass"></div>
 
-                                                                </td>
-                                                                <td>
-                                                                    <input class="form-control form-control-sm" type="text" placeholder="classScore">
-
-
-                                                                </td>
-                                                                <td>
-                                                                    <p>30%</p>
-                                                                </td>
-                                                                <td>
-                                                                    <input class="form-control form-control-sm" type="text" placeholder="examScore">
-
-                                                                </td>
-                                                                <td>
-
-                                                                    <p>60%</p>
-
-                                                                </td>
-                                                                <td>
-                                                                    <p>Total</p>
-                                                                </td>
-                                                                <td>
-                                                                    <p>Remarks</p>
-                                                                </td>
-                                                                <td>
-                                                                    <i class="fa fa-save fa-lg "></i>
-
-                                                                </td>
-                                                            </tr>
-                                                        </tbody>
-
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <table class="table table-responsive" id="assessTable">
+                                                        <tr>
+                                                            <td colspan="2">
+                                                                <input type="text" style="color:black;" class="form-control" id="studentName" name="studentName" placeholder="Student Name" disabled>
+                                                                <input type="hidden" class="form-control" id="studentId" name="studentId" placeholder="Student ID" disabled>
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>
+                                                                <input type="number" class="form-control" id="classScore" name="classScore" placeholder="class score">
+                                                            </td>
+                                                            <td>
+                                                                <p id="convertClass">00%</p>
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>
+                                                                <input type="number" class="form-control" id="examScore" name="examScore" placeholder="Exams score">
+                                                            </td>
+                                                            <td>
+                                                                <p id="convertExams">00%</p>
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td colspan="2">
+                                                                <p>Total: <span id="total">Total</span></p>
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td colspan="2">
+                                                                <p>Grade: <span id="grade">Grade</span> </p>
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td colspan="2">
+                                                                <p id="remarks">Remarks</p>
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td colspan="2">
+                                                                <button type="button" class="btn btn-primary" id="saveMarks" name="saveMarks" value="saveMarks"><i class="fa fa-save"></i> Save Marks</button>
+                                                            </td>
+                                                        </tr>
                                                     </table>
+
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <div id="displayMarksEntered"></div>
+                                                    <!-- <div class="list-group">
+                                                        <button type="button" class="list-group-item list-group-item-action active" aria-current="true">
+                                                            Entered Marks
+                                                        </button>
+                                                        <button type="button" class="list-group-item list-group-item-action">Dapibus ac facilisis in</button>
+                                                        <button type="button" class="list-group-item list-group-item-action">Morbi leo risus</button>
+                                                        <button type="button" class="list-group-item list-group-item-action">Porta ac consectetur ac</button>
+                                                        <button type="button" class="list-group-item list-group-item-action" disabled>Vestibulum at eros</button>
+                                                    </div> -->
+
                                                 </div>
                                             </div>
 
@@ -329,3 +333,291 @@ if (isset($_POST['send'])) {
 </body>
 
 </html>
+<script>
+    $(document).ready(function() {
+        //=============== HIDDEN COMPONENT
+        $('#subject').hide();
+        $('#class_').hide();
+        $('#subjectLabel').hide();
+        $('#classLabel').hide();
+        $('#classScorePercent').hide();
+        $('#examScorePercent').hide();
+        $('#classScorePercentLabel').hide();
+        $('#examScorePercentLabel').hide();
+        $('#showStudentInClass').hide();
+        $('#assessTable').hide();
+        //============================== YEAR CHANGE METHODS =========================
+        $('#year').change(function() {
+            var yearChange = $(this).val();
+            if (yearChange == '') {
+                alert('PLEASE SELECT A YEAR');
+                $('#subject').hide();
+                $('#class_').hide();
+                $('#subjectLabel').hide();
+                $('#classLabel').hide();
+                $('#classScorePercent').hide();
+                $('#examScorePercent').hide();
+                $('#classScorePercentLabel').hide();
+                $('#examScorePercentLabel').hide();
+                $('#showStudentInClass').hide();
+                $('#assessTable').hide();
+            } else {
+                $('#subject').show();
+                $('#class_').hide();
+                $('#subjectLabel').show();
+                $('#classLabel').hide();
+                $('#classScorePercent').hide();
+                $('#examScorePercent').hide();
+                $('#classScorePercentLabel').hide();
+                $('#examScorePercentLabel').hide();
+                $('#showStudentInClass').hide();
+                $('#assessTable').hide();
+            }
+        });
+
+        //============================== YEAR CHANGE METHODS =========================
+        $('#subject').change(function() {
+            var subjectChange = $(this).val();
+            if (subjectChange == 'Select Subject') {
+                // alert(subjectChange);
+                $('#class_').hide();
+                $('#classLabel').hide();
+                $('#classScorePercent').hide();
+                $('#examScorePercent').hide();
+                $('#classScorePercentLabel').hide();
+                $('#examScorePercentLabel').hide();
+                $('#showStudentInClass').hide();
+                $('#assessTable').hide();
+            } else {
+                // alert(subjectChange);
+                $('#class_').show();
+                $('#classLabel').show();
+                $('#classScorePercent').hide();
+                $('#examScorePercent').hide();
+                $('#classScorePercentLabel').hide();
+                $('#examScorePercentLabel').hide();
+                $('#showStudentInClass').hide();
+                $('#assessTable').hide();
+            }
+        });
+
+        //============================== SUBJECT CHANGE METHODS =========================
+        $('#subject').change(function() {
+            var subjectChange = $(this).val();
+            if (subjectChange == 'Select Subject') {
+                // alert(subjectChange);
+                $('#class_').hide();
+                $('#classLabel').hide();
+                $('#classScorePercent').hide();
+                $('#examScorePercent').hide();
+                $('#classScorePercentLabel').hide();
+                $('#examScorePercentLabel').hide();
+                $('#showStudentInClass').hide();
+                $('#assessTable').hide();
+            } else {
+                // alert(subjectChange);
+                $('#class_').show();
+                $('#classLabel').show();
+                $('#classScorePercent').hide();
+                $('#examScorePercent').hide();
+                $('#classScorePercentLabel').hide();
+                $('#examScorePercentLabel').hide();
+                $('#showStudentInClass').hide();
+                $('#assessTable').hide();
+            }
+        }); //============================== CLASS CHANGE METHODS =========================
+        $('#class_').change(function() {
+            var classChange = $(this).val();
+            if (classChange == 'Select Class or Form') {
+                // alert('PLEASE SELECT CLASS OR FORM');
+                // $('#class_').hide();
+                // $('#classLabel').hide();
+                $('#classScorePercent').hide();
+                $('#examScorePercent').hide();
+                $('#classScorePercentLabel').hide();
+                $('#examScorePercentLabel').hide();
+                $('#showStudentInClass').hide();
+                $('#assessTable').hide();
+            } else {
+                // alert(classChange);
+                $('#classScorePercent').show();
+                $('#examScorePercent').show();
+                $('#classScorePercentLabel').show();
+                $('#examScorePercentLabel').show();
+                $('#showStudentInClass').show();
+                $('#assessTable').show();
+
+                $.ajax({
+                    method: 'get',
+                    url: 'scripts/marksScripts.php',
+                    data: {
+                        classChange
+                    },
+                    success: function(data) {
+                        $('#showStudentInClass').html(data);
+                    }
+                });
+            }
+        });
+        let totalClassScore = 0.0;
+        let totalExamScore = 0.0;
+        $(document).on('keyup', '#classScore', function() {
+            var classPercent = $('#classScorePercent').val();
+            var class_score = $('#classScore').val();
+            if (classPercent == '') {
+                alert('Enter Class Score Percent');
+                $('#classScore').val('');
+            } else {
+                totalClassScore = parseFloat(classPercent / 100) * parseFloat(class_score);
+                $('#convertClass').text(totalClassScore.toFixed(2).toString());
+            }
+
+        });
+        //*********************Exams percentage */
+        $(document).on('keyup', '#examScore', function() {
+            var examPercent = $('#examScorePercent').val();
+            var exam_score = $('#examScore').val();
+            if (examPercent == '') {
+                alert('Enter exam Score Percent');
+                $('#examScore').val('');
+            } else {
+                totalExamScore = parseFloat(examPercent / 100) * parseFloat(exam_score);
+                $('#convertExams').text(totalExamScore.toFixed(2).toString());
+                let total = parseFloat(totalClassScore) + parseFloat(totalExamScore);
+                $('#total').text(total.toFixed(2).toString());
+                gradingSystem(total);
+            }
+
+        });
+        // ===================== SET NAME TO FIELD
+        $(document).on('click', '.add', function() {
+            let studentId = $(this).attr('id');
+            let studentName = $(this).attr('value');
+            $('#studentName').val(studentName);
+            $('#studentId').val(studentId);
+        });
+
+        //======================= SAVE MARKS
+        $('#saveMarks').click(function() {
+            let term = $('#term').val();
+            let academicYear = $('#year').val();
+            let subject = $('#subject').val();
+            let class_ = $('#class_').val();
+            let classScorePercent = $('#classScorePercent').val();
+            let examScorePercent = $('#examScorePercent').val();
+            let studentName = $('#studentName').val();
+            let studentId = $('#studentId').val();
+            let convertClass = $('#convertClass').text();
+            let convertExams = $('#convertExams').text();
+            let total = $('#total').text();
+            let grade = $('#grade').text();
+            let remarks = $('#remarks').text();
+            let saveBtn = $('#saveMarks').val();
+
+            if ($('#classScore').val() == '' && $('#examScore').val() == '') {
+                alert('Class & Exams Score Fields can\'t be empty');
+            } else if ($('#studentName').val() == '') {
+                alert('Please click on Student\'s Name from the left panel')
+            } else {
+                $.ajax({
+                    method: 'POST',
+                    url: 'scripts/marksScripts.php',
+                    data: {
+                        term,
+                        academicYear,
+                        subject,
+                        class_,
+                        classScorePercent,
+                        examScorePercent,
+                        studentName,
+                        studentId,
+                        convertClass,
+                        convertExams,
+                        total,
+                        grade,
+                        remarks,
+                        saveBtn
+                    },
+                    success: function(data) {
+                        // $('#stat').html(data);
+                        alert(data);
+                        $('#studentName').val('');
+                        $('#classScore').val('');
+                        $('#examScore').val('');
+                        $('#convertClass').text('0.0%');
+                        $('#convertExams').text('0.0%');
+                        $('#total').text('0.0%');
+                        $('#grade').text('');
+                        $('#remarks').text('');
+                    }
+                });
+            }
+
+        });
+
+        //========================== ENTERED MARKS
+        $('#class_').change(function() {
+            let marksClass = $(this).val();
+            let marksTerm = $('#term').val();
+            let marksYear = $('#year').val();
+            let marksSubject = $('#subject').val();
+            $.ajax({
+                method: 'get',
+                url: 'scripts/marksScripts.php',
+                data: {
+                    marksClass,
+                    marksTerm,
+                    marksYear,
+                    marksSubject,
+                },
+                success: function(data) {
+                    $('#displayMarksEntered').html(data);
+                }
+            });
+
+        });
+
+        //========================== Grading System
+        function gradingSystem(grade) {
+            if (grade >= 75 || grade == 100) {
+                $('#grade').text('A1');
+                $('#remarks').text('Excellent');
+                $('#remarks').css('color', 'black');
+            } else if (grade >= 70 || grade == 74) {
+                $('#grade').text('B2');
+                $('#remarks').text('Very Good');
+                $('#remarks').css('color', 'black');
+            } else if (grade >= 65 || grade == 69) {
+                $('#grade').text('B3');
+                $('#remarks').text('Good');
+                $('#remarks').css('color', 'black');
+            } else if (grade >= 60 || grade == 64) {
+                $('#grade').text('C4');
+                $('#remarks').text('Credit');
+                $('#remarks').css('color', 'black');
+            } else if (grade >= 55 || grade == 59) {
+                $('#grade').text('C5');
+                $('#remarks').text('Credit');
+                $('#remarks').css('color', 'black');
+            } else if (grade >= 50 || grade == 54) {
+                $('#grade').text('C6');
+                $('#remarks').text('Credit');
+                $('#remarks').css('color', 'black');
+            } else if (grade >= 45 || grade == 49) {
+                $('#grade').text('D7');
+                $('#remarks').text('Pass');
+                $('#remarks').css('color', 'black');
+            } else if (grade >= 40 || grade == 44) {
+                $('#grade').text('E8');
+                $('#remarks').text('Pass');
+                $('#remarks').css('color', 'black');
+            } else if (grade >= 0 || grade == 39) {
+                $('#grade').text('F9');
+                $('#remarks').text('Fail');
+                $('#remarks').css('color', 'red');
+            } else {
+                alert('Marks Out of Range');
+            }
+        }
+    })
+</script>
