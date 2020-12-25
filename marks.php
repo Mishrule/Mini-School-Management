@@ -494,6 +494,7 @@ if (isset($_POST['send'])) {
             let studentId = $(this).attr('id');
             let studentName = $(this).attr('value');
             $('#studentName').val(studentName);
+            $('#saveMarks').text('Save Marks');
             $('#studentId').val(studentId);
         });
 
@@ -514,43 +515,90 @@ if (isset($_POST['send'])) {
             let remarks = $('#remarks').text();
             let saveBtn = $('#saveMarks').val();
 
-            if ($('#classScore').val() == '' && $('#examScore').val() == '') {
-                alert('Class & Exams Score Fields can\'t be empty');
-            } else if ($('#studentName').val() == '') {
-                alert('Please click on Student\'s Name from the left panel')
-            } else {
-                $.ajax({
-                    method: 'POST',
-                    url: 'scripts/marksScripts.php',
-                    data: {
-                        term,
-                        academicYear,
-                        subject,
-                        class_,
-                        classScorePercent,
-                        examScorePercent,
-                        studentName,
-                        studentId,
-                        convertClass,
-                        convertExams,
-                        total,
-                        grade,
-                        remarks,
-                        saveBtn
-                    },
-                    success: function(data) {
-                        // $('#stat').html(data);
-                        alert(data);
-                        $('#studentName').val('');
-                        $('#classScore').val('');
-                        $('#examScore').val('');
-                        $('#convertClass').text('0.0%');
-                        $('#convertExams').text('0.0%');
-                        $('#total').text('0.0%');
-                        $('#grade').text('');
-                        $('#remarks').text('');
-                    }
-                });
+            // 
+
+            if ($('#saveMarks').text() == 'Save Marks') {
+                if ($('#classScore').val() == '' && $('#examScore').val() == '') {
+                    alert('Class & Exams Score Fields can\'t be empty');
+                } else if ($('#studentName').val() == '') {
+                    alert('Please click on Student\'s Name from the left panel');
+                } else {
+                    $.ajax({
+                        method: 'POST',
+                        url: 'scripts/marksScripts.php',
+                        data: {
+                            term,
+                            academicYear,
+                            subject,
+                            class_,
+                            classScorePercent,
+                            examScorePercent,
+                            studentName,
+                            studentId,
+                            convertClass,
+                            convertExams,
+                            total,
+                            grade,
+                            remarks,
+                            saveBtn
+                        },
+                        success: function(data) {
+                            // $('#stat').html(data);
+                            
+                            alert(data);
+                            $('#studentName').val('');
+                            $('#classScore').val('');
+                            $('#examScore').val('');
+                            $('#convertClass').text('0.0%');
+                            $('#convertExams').text('0.0%');
+                            $('#total').text('0.0%');
+                            $('#grade').text('');
+                            $('#remarks').text('');
+                            fetchMarks();
+                        }
+                    });
+                }
+            } else if ($('#saveMarks').text() == 'Update Values') {
+                if ($('#classScore').val() == '' && $('#examScore').val() == '') {
+                    alert('Class & Exams Score Fields can\'t be empty');
+                } else if ($('#studentName').val() == '') {
+                    alert('Please click on Student\'s Name from the left panel');
+                } else {
+                    $.ajax({
+                        method: 'POST',
+                        url: 'scripts/marksScripts.php',
+                        data: {
+                            'term_': term,
+                            'academicYear_': academicYear,
+                            'subject_': subject,
+                            'class__': class_,
+                            'classScorePercent_': classScorePercent,
+                            'examScorePercent_': examScorePercent,
+                            'studentName_': studentName,
+                            'studentId_': studentId,
+                            'convertClass_': convertClass,
+                            'convertExams_': convertExams,
+                            'total_': total,
+                            'grade_': grade,
+                            'remarks_': remarks,
+                            'save_Btn': saveBtn
+                        },
+                        success: function(data) {
+                            // $('#stat').html(data);
+                            
+                            alert(data);
+                            $('#studentName').val('');
+                            $('#classScore').val('');
+                            $('#examScore').val('');
+                            $('#convertClass').text('0.0%');
+                            $('#convertExams').text('0.0%');
+                            $('#total').text('0.0%');
+                            $('#grade').text('');
+                            $('#remarks').text('');
+                            fetchMarks();
+                        }
+                    });
+                }
             }
 
         });
@@ -619,5 +667,43 @@ if (isset($_POST['send'])) {
                 alert('Marks Out of Range');
             }
         }
+
+        // =================== UPDATE FIELDS =====================
+        // ===================== SET NAME TO FIELD
+        $(document).on('click', '.update', function() {
+            let studentUpdateId = $(this).attr('id');
+            let studentUpdateName = $(this).attr('value');
+            $('#saveMarks').text('Update Values');
+            $('#studentName').val(studentUpdateName);
+            $('#studentId').val(studentUpdateId);
+        });
+
+        // ============== Function to Fetch data
+        function fetchMarks() {
+
+            let fetchterm = $('#term').val();
+            let fetchacademicYear = $('#year').val();
+            let fetchsubject = $('#subject').val();
+            let fetchclass_ = $('#class_').val();
+            let fetech = 'fetch';
+                      
+
+            $.ajax({
+                method: 'GET',
+                url: 'scripts/marksScripts.php',
+                data: {
+                    fetchterm,
+                    fetchacademicYear,
+                    fetchsubject,
+                    fetchclass_,
+                    fetech
+                },
+                success: function(data) {
+                     $('#displayMarksEntered').html(data);
+                }
+            });
+
+        }
+
     })
 </script>
