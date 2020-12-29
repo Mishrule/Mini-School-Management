@@ -81,7 +81,7 @@
                             <ul class="submenu-angle" aria-expanded="false">
                                 <li><a title="Inbox" href="marks.php"><span class="mini-sub-pro">Enter Marks</span></a></li>
                                 <li><a title="View Mail" href="view_report.php"><span class="mini-sub-pro">View Report</span></a></li>
-                                <li><a title="Compose Mail" href="#"><span class="mini-sub-pro">Print Report</span></a></li>
+                                <li><a title="Compose Mail" href="print_report.php"><span class="mini-sub-pro">Print Report</span></a></li>
                                 <!--<li><a title="Compose Mail" href="#"><span class="mini-sub-pro">Announcement</span></a></li>-->
                                 
                             </ul>
@@ -90,7 +90,7 @@
                             <a class="has-arrow" href="#" aria-expanded="false"><i class="icon nalika-bar-chart icon-wrap"></i> <span class="mini-click-non">User Account</span></a>
                             <ul class="submenu-angle" aria-expanded="false">
                                 <li><a title="Bar Charts" href="create_user.php"><span class="mini-sub-pro">Create User</span></a></li>
-                                <li><a title="Line Charts" href="manage_user.php"><span class="mini-sub-pro">Manage User</span></a></li>
+                                <!--<li><a title="Line Charts" href="manage_user.php"><span class="mini-sub-pro">Manage User</span></a></li>-->
                                 <li><a title="Area Charts" href="logout.php"><span class="mini-sub-pro">Logout</span></a></li>
                                 
                             </ul>

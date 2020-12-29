@@ -52,9 +52,14 @@
         // print($fetchmarksSQL);
         $fetchMarksResult = mysqli_query($con, $fetchmarksSQL);
         $fetechShowMarks .='
-        <table class="table table-bordered border-primary">
+        <table class="table table-bordered border-primary" id="reportTable">
             <thead>
-                <th colspan="6"><div align="center">Terminal Report</div></th>
+                <tr>
+                <th colspan="6"><div align="center"><h3 id="school_Name"></h3></div></th>
+               
+                </tr>
+                <tr> <th colspan="6"><div align="center">Terminal Report</div></th></tr>
+                
             </thead>
             <tbody>
                 <tr>
@@ -97,6 +102,14 @@
             }
         }
         $fetechShowMarks .='
+        <tr>
+            <td colspan="2"><p>Headmaster\'s Remark: <span id="headmaster"></span> </p></td>
+            <td colspan="2"><p>Class Teacher\'s Remark: <span id="teacher"></span></p></td>
+            <td colspan="2"><p>Student\'s Interest: <span id="stuRemarks"></span></p></td>
+        </tr>
+        <tr>
+            <td colspan="6"><button type="button" id="printValue" class="btn btn-primary btn-sm">Print Report</button></td>
+        </tr>
         </tbody>
         
     </table>
